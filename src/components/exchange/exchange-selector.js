@@ -6,6 +6,7 @@ export function mapStateToProps(state) {
 	return {
 		rates: exchangeRates.get('rates'),
 		error: exchangeRates.get('error'),
+		pockets: exchangeRates.get('pockets'),
 	};
 }
 

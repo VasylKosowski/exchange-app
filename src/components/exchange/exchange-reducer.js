@@ -2,10 +2,12 @@ import { createReducer } from '../../reducers/create-reducer';
 import { Map } from 'immutable';
 import { LOAD_EXCHANGE_RATES } from './exchange-actions';
 import get from 'lodash/get';
+import { DEFAULT_AMOUNTS } from '../../constants/configurations';
 
 export const initialState = {
 	rates: {},
 	error: '',
+	pockets: DEFAULT_AMOUNTS,
 };
 
 export default createReducer(Map(initialState), {
