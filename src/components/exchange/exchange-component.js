@@ -1,12 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import noop from 'lodash/noop';
-import map from 'lodash/map';
-import ExchangePocket from './components/exhange-pocket';
-import { Carousel } from 'react-responsive-carousel';
+import isEqual from 'lodash/isEqual';
+import ExchangeRates from './components/exchange-rates';
+import ExchangePockets from './components/exchange-pockets';
 import { DEFAULT_INTERVAL } from '../../constants/app-config';
+import { SELECTED_FROM_CURRENCY, SELECTED_TO_CURRENCY } from '../../constants/configurations';
 
 class ExchangeComponent extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			selectedFromCurrency: SELECTED_FROM_CURRENCY,
+			selectedToCurrency: SELECTED_TO_CURRENCY
+		};
+	}
+
 	componentDidMount() {
 		const { actions } = this.props;
 
@@ -20,22 +30,31 @@ class ExchangeComponent extends Component {
 	}
 
 	render() {
+		const { rates, pockets } = this.props;
+
 		return (
 			<div className="exchange-application">
 				<header className="app-header">
-					<Carousel centerMode centerSlidePercentage={100} showThumbs={false} showStatus={false}>
-						{this._renderPockets()}
-					</Carousel>
+					<div className="row rates-row">
+						{this._isRateSelectorVisible() && <ExchangeRates rates={rates} fromCurrency={this.state.selectedFromCurrency} />}
+					</div>
+					<div className="row">
+						<ExchangePockets pockets={pockets} onFromCurrencyChange={currencyCode => {
+							this.setState({
+								selectedFromCurrency: currencyCode
+							})
+						}} onToCurrencyChange={currencyCode => {
+							this.setState({
+								selectedToCurrency: currencyCode
+							})
+						}} />
+					</div>
 				</header>
 			</div>
 		);
 	}
 
-	_renderPockets = () => map(this.props.pockets, (value, key) => {
-		return <div key={key}>
-			<ExchangePocket currency={key} amount={value} />
-		</div>
-	});
+	_isRateSelectorVisible = () => !isEqual(this.state.selectedFromCurrency, this.state.selectedToCurrency);
 }
 
 ExchangeComponent.propTypes = {

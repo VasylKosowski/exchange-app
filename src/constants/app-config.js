@@ -1,3 +1,4 @@
-export const DEFAULT_INTERVAL = 10;
+export const DEFAULT_INTERVAL = 1000;
 export const DIGITS_AFTER_COMMA = 2;
+export const DIGITS_AFTER_COMMA_IN_RATES_SELECTOR = 4;
 export const DEFAULT_AMOUNT = 0.00;
