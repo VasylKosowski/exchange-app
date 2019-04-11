@@ -1,28 +1,42 @@
-import React from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import map from 'lodash/map';
 import noop from 'lodash/noop';
+import isEqual from 'lodash/isEqual';
+import findIndex from 'lodash/findIndex';
 import ExchangeInput from './exchange-input';
-import ExchangeCarousel from './exchange-carousel'
+import ExchangeCarousel from './exchange-carousel';
+import { SELECTED_FROM_CURRENCY, SELECTED_TO_CURRENCY } from '../../../../constants/configurations';
 
-const ExchangePockets = ({ pockets, onFromCurrencyChange, onToCurrencyChange }) => {
-	const renderPockets = () => map(pockets, (value, key) => {
+class ExchangePockets extends Component {
+	shouldComponentUpdate(nextProps, nextState, nextContext) {
+		return !isEqual(nextProps.pockets, this.props.pockets);
+	}
+
+	render() {
+		const { onFromCurrencyChange, onToCurrencyChange } = this.props;
+		const pockets = this._renderPockets();
+
+		return (
+			<div className="exchange-pockets">
+				<ExchangeCarousel selectedItem={findIndex(pockets, { key: SELECTED_FROM_CURRENCY })}
+				                  onChange={itemKey => onFromCurrencyChange(itemKey)}>
+					{pockets}
+				</ExchangeCarousel>
+				<ExchangeCarousel selectedItem={findIndex(pockets, { key: SELECTED_TO_CURRENCY })}
+				                  onChange={itemKey => onToCurrencyChange(itemKey)}>
+					{pockets}
+				</ExchangeCarousel>
+			</div>
+		);
+	}
+
+	_renderPockets = () => map(this.props.pockets, (value, key) => {
 		return <div key={key}>
 			<ExchangeInput currency={key} amount={value} />
 		</div>
 	});
-
-	return (
-		<div className="exchange-pockets">
-			<ExchangeCarousel onChange={itemKey => onFromCurrencyChange(itemKey)}>
-				{renderPockets()}
-			</ExchangeCarousel>
-			<ExchangeCarousel selectedItem={1} onChange={itemKey => onToCurrencyChange(itemKey)}>
-				{renderPockets()}
-			</ExchangeCarousel>
-		</div>
-	);
-};
+}
 
 ExchangePockets.propTypes = {
 	/** Pockets Object */

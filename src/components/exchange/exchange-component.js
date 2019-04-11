@@ -31,12 +31,13 @@ class ExchangeComponent extends Component {
 
 	render() {
 		const { rates, pockets } = this.props;
+		const { selectedFromCurrency } = this.state;
 
 		return (
 			<div className="exchange-application">
 				<header className="app-header">
 					<div className="row rates-row">
-						{this._isRateSelectorVisible() && <ExchangeRates rates={rates} fromCurrency={this.state.selectedFromCurrency} />}
+						{this._isRateSelectorVisible() && <ExchangeRates rates={rates} fromCurrency={selectedFromCurrency} />}
 					</div>
 					<div className="row">
 						<ExchangePockets pockets={pockets} onFromCurrencyChange={currencyCode => {
