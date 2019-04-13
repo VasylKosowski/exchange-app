@@ -5,17 +5,14 @@ import Exchange from './components/exchange';
 import './stylesheets/app.css';
 import 'bootstrap/dist/css/bootstrap.css';
 
-const App = ({ store }) => {
-    return (
-        <Provider store={store}>
-            <Exchange />
-        </Provider>
-    );
-  };
+const App = ({ store }) => (
+    <Provider store={store}>
+        <Exchange />
+    </Provider>
+);
 
 App.propTypes = {
     store: PropTypes.object.isRequired,
 };
 
 export default App;
-

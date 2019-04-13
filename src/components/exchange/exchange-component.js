@@ -8,72 +8,81 @@ import { DEFAULT_INTERVAL } from '../../constants/app-config';
 import { SELECTED_FROM_CURRENCY, SELECTED_TO_CURRENCY } from '../../constants/configurations';
 
 class ExchangeComponent extends Component {
-	constructor(props) {
-		super(props);
+    constructor(props) {
+        super(props);
 
-		this.state = {
-			selectedFromCurrency: SELECTED_FROM_CURRENCY,
-			selectedToCurrency: SELECTED_TO_CURRENCY
-		};
-	}
+        this.state = {
+            selectedFromCurrency: SELECTED_FROM_CURRENCY,
+            selectedToCurrency: SELECTED_TO_CURRENCY,
+        };
+    }
 
-	componentDidMount() {
-		const { actions } = this.props;
+    componentDidMount() {
+        const { actions } = this.props;
 
-		actions.getRates(); // on first load we load the rates;
+        actions.getRates(); // on first load we load the rates;
 
-		this.timer = setInterval(() => { actions.getRates() }, DEFAULT_INTERVAL * 1000);
-	}
+        this.timer = setInterval(() => {
+            actions.getRates();
+        }, DEFAULT_INTERVAL * 1000);
+    }
 
-	componentWillUnmount() {
-		clearInterval(this.timer); // stop the timer on unmount
-	}
+    componentWillUnmount() {
+        clearInterval(this.timer); // stop the timer on unmount
+    }
 
-	render() {
-		const { rates, pockets } = this.props;
-		const { selectedFromCurrency } = this.state;
+    render() {
+        const { rates, pockets, error } = this.props;
+        const { selectedFromCurrency } = this.state;
 
-		return (
-			<div className="exchange-application">
-				<header className="app-header">
-					<div className="row rates-row">
-						{this._isRateSelectorVisible() && <ExchangeRates rates={rates} fromCurrency={selectedFromCurrency} />}
-					</div>
-					<div className="row">
-						<ExchangePockets pockets={pockets} onFromCurrencyChange={currencyCode => {
-							this.setState({
-								selectedFromCurrency: currencyCode
-							})
-						}} onToCurrencyChange={currencyCode => {
-							this.setState({
-								selectedToCurrency: currencyCode
-							})
-						}} />
-					</div>
-				</header>
-			</div>
-		);
-	}
+        return (
+            <div className="exchange-application">
+                <header className="app-header">
+                    {error && <span>Error: {error}</span>}
+                    <div className="row rates-row">
+                        {this._isRateSelectorVisible() && (
+                            <ExchangeRates rates={rates} fromCurrency={selectedFromCurrency} />
+                        )}
+                    </div>
+                    <div className="row">
+                        <ExchangePockets
+                            pockets={pockets}
+                            onFromCurrencyChange={currencyCode => {
+                                this.setState({
+                                    selectedFromCurrency: currencyCode,
+                                });
+                            }}
+                            onToCurrencyChange={currencyCode => {
+                                this.setState({
+                                    selectedToCurrency: currencyCode,
+                                });
+                            }}
+                        />
+                    </div>
+                </header>
+            </div>
+        );
+    }
 
-	_isRateSelectorVisible = () => !isEqual(this.state.selectedFromCurrency, this.state.selectedToCurrency);
+    _isRateSelectorVisible = () => !isEqual(this.state.selectedFromCurrency, this.state.selectedToCurrency);
 }
 
 ExchangeComponent.propTypes = {
-	actions: PropTypes.shape({
-		getRates: PropTypes.func.isRequired,
-	}).isRequired,
-	error: PropTypes.string,
-	rates: PropTypes.object,
-	pockets: PropTypes.object,
+    actions: PropTypes.shape({
+        getRates: PropTypes.func.isRequired,
+    }).isRequired,
+    error: PropTypes.string,
+    pockets: PropTypes.object,
+    rates: PropTypes.object,
 };
 
 ExchangeComponent.defaultProps = {
-	actions: {
-		getRates: noop,
-	},
-	error: '',
-	rates: {},
-	pockets: {},
+    actions: {
+        getRates: noop,
+    },
+    error: '',
+    rates: {},
+    pockets: {},
 };
 
 export default ExchangeComponent;

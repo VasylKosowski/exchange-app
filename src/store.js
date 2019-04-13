@@ -7,10 +7,10 @@ let middleware = applyMiddleware(...[ReduxThunk]);
 
 // add the redux dev tools
 if (window.__REDUX_DEVTOOLS_EXTENSION__) {
-	middleware = compose(
-		middleware,
-		window.__REDUX_DEVTOOLS_EXTENSION__()
-	);
+    middleware = compose(
+        middleware,
+        window.__REDUX_DEVTOOLS_EXTENSION__()
+    );
 }
 
 // create the store
