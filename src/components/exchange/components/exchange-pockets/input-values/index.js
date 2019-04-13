@@ -2,27 +2,29 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import noop from 'lodash/noop';
 import classNames from 'classnames';
-import get from 'lodash/get';
-import { validateKey } from '../../../../../utils/common';
+import CurrencyInput from 'react-currency-input';
+import { isEmptyOrZero } from '../../../../../utils/common';
+import { PRECISION_AFTER_COMMA } from '../../../../../constants/app-config';
 
 import './styles.css';
 
-const InputValues = React.forwardRef((props, ref) => {
-    const { className, value, isReadOnly, onChange } = props;
-    const componentClass = classNames('pocket-input-value', className);
+const InputValues = ({ className, value, isReadOnly, onChange }) => {
+    const componentClass = classNames('pocket-input-value', className, {
+        'input-value-read-only': isReadOnly,
+    });
+    const prefix = isEmptyOrZero(value) ? '' : isReadOnly ? '+' : '-';
 
     return (
         <div className={componentClass}>
-            <input
-                ref={ref}
+            <CurrencyInput
+                prefix={prefix}
                 value={value}
-                readOnly={isReadOnly}
-                onChange={event => onChange(get(event, 'target.value'))}
-                onKeyPress={validateKey}
+                precision={PRECISION_AFTER_COMMA}
+                onChange={val => onChange(val)}
             />
         </div>
     );
-});
+};
 
 InputValues.propTypes = {
     /** className to override */

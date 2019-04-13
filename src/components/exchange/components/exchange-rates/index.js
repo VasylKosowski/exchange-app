@@ -4,7 +4,7 @@ import map from 'lodash/map';
 import omit from 'lodash/omit';
 import getSymbolFromCurrency from 'currency-symbol-map';
 import { formatAmount } from '../../../../utils/common';
-import { DIGITS_AFTER_COMMA_IN_RATES_SELECTOR } from '../../../../constants/app-config';
+import { PRECISION_AFTER_COMMA_IN_RATES_SELECTOR } from '../../../../constants/app-config';
 
 import './styles.css';
 
@@ -19,7 +19,7 @@ const ExchangeRates = ({ rates, fromCurrency }) => {
                     const calculatedRate = (1 * value) / rates[fromCurrency];
                     const optionValue = `${getSymbolFromCurrency(fromCurrency)}1 = ${currencySymbol}${formatAmount(
                         calculatedRate,
-                        DIGITS_AFTER_COMMA_IN_RATES_SELECTOR
+                        PRECISION_AFTER_COMMA_IN_RATES_SELECTOR
                     )}`;
 
                     return (

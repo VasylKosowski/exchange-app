@@ -3,17 +3,15 @@ import PropTypes from 'prop-types';
 import map from 'lodash/map';
 import noop from 'lodash/noop';
 import isEqual from 'lodash/isEqual';
-import assign from 'lodash/assign';
-import size from 'lodash/size';
-import isEmpty from 'lodash/isEmpty';
 import findIndex from 'lodash/findIndex';
+import forEach from 'lodash/forEach';
 import PocketValues from './pocket-values';
 import InputValues from './input-values';
 import ExchangeCarousel from './exchange-carousel';
 import { SELECTED_FROM_CURRENCY, SELECTED_TO_CURRENCY } from '../../../../constants/configurations';
 import getSymbolFromCurrency from 'currency-symbol-map';
-import { formatAmount } from '../../../../utils/common';
-import { DIGITS_AFTER_COMMA_IN_RATES_SELECTOR, DIGITS_AFTER_COMMA } from '../../../../constants/app-config';
+import { formatAmount, isEmptyOrZero } from '../../../../utils/common';
+import { PRECISION_AFTER_COMMA_IN_RATES_SELECTOR, PRECISION_AFTER_COMMA } from '../../../../constants/app-config';
 
 class ExchangePockets extends Component {
     constructor(props) {
@@ -25,18 +23,13 @@ class ExchangePockets extends Component {
             fromValue: '',
             toValue: '',
         };
-
-        const inputRefs = {};
-
-        map(props.pockets, (value, key) => {
-            assign(inputRefs, { [key]: React.createRef() });
-        });
-
-        this.inputRefs = inputRefs;
     }
 
     componentDidMount() {
-        this.inputRefs && this.inputRefs[SELECTED_FROM_CURRENCY].current.focus();
+        // add read only attribute to toValue selector
+        forEach(document.querySelectorAll('.input-value-read-only input'), readOnlyItem => {
+            readOnlyItem.setAttribute('readOnly', true);
+        });
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -89,28 +82,21 @@ class ExchangePockets extends Component {
             <div key={key} className="row exchange-values">
                 <PocketValues currency={key} amount={value} className="col-xs-6" />
                 <InputValues
-                    ref={isFromValue ? this.inputRefs[key] : null}
                     isReadOnly={!isFromValue}
                     className="col-xs-6"
                     value={isFromValue ? this.state.fromValue : this.state.toValue}
                     onChange={inputValue => {
-                        let convertedInputValue = '';
-
-                        if (size(inputValue) > 1) {
-                            convertedInputValue = `-${inputValue.substring(1)}`;
-                        } else {
-                            convertedInputValue = isEqual(inputValue, '-') ? '' : `-${inputValue}`;
-                        }
-                        const convertedToValue = isEmpty(convertedInputValue)
+                        const convertedToValue = isEmptyOrZero(inputValue)
                             ? ''
-                            : `+${formatAmount(
-                                  (Math.abs(convertedInputValue) * this.props.rates[this.state.toCurrency]) /
+                            : `${formatAmount(
+                                  (Math.abs(parseFloat(inputValue.replace(/,/g, ''))) *
+                                      this.props.rates[this.state.toCurrency]) /
                                       this.props.rates[key],
-                                  DIGITS_AFTER_COMMA
+                                  PRECISION_AFTER_COMMA
                               )}`;
 
                         this.setState({
-                            fromValue: convertedInputValue,
+                            fromValue: inputValue,
                             toValue: convertedToValue,
                         });
                     }}
@@ -120,7 +106,7 @@ class ExchangePockets extends Component {
                         {`${getSymbolFromCurrency(key)}1 = ${getSymbolFromCurrency(this.state.fromCurrency)}
                             ${formatAmount(
                                 this.props.rates[this.state.fromCurrency] / this.props.rates[key],
-                                DIGITS_AFTER_COMMA_IN_RATES_SELECTOR
+                                PRECISION_AFTER_COMMA_IN_RATES_SELECTOR
                             )}`}
                     </h6>
                 )}
