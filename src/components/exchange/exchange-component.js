@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import noop from 'lodash/noop';
 import isEqual from 'lodash/isEqual';
+import get from 'lodash/get';
 import ExchangeRates from './components/exchange-rates';
 import ExchangePockets from './components/exchange-pockets';
 import { DEFAULT_INTERVAL } from '../../constants/app-config';
@@ -13,7 +14,9 @@ class ExchangeComponent extends Component {
 
         this.state = {
             selectedFromCurrency: SELECTED_FROM_CURRENCY,
+            selectedFromValue: 0,
             selectedToCurrency: SELECTED_TO_CURRENCY,
+            selectedToValue: 0,
         };
     }
 
@@ -32,8 +35,8 @@ class ExchangeComponent extends Component {
     }
 
     render() {
-        const { rates, pockets, error } = this.props;
-        const { selectedFromCurrency } = this.state;
+        const { rates, pockets, error, actions } = this.props;
+        const { selectedFromCurrency, selectedFromValue, selectedToCurrency, selectedToValue } = this.state;
 
         return (
             <div className="exchange-application">
@@ -48,6 +51,12 @@ class ExchangeComponent extends Component {
                         <ExchangePockets
                             rates={rates}
                             pockets={pockets}
+                            onValueChange={values => {
+                                this.setState({
+                                    selectedFromValue: get(values, 'fromValue'),
+                                    selectedToValue: get(values, 'toValue'),
+                                });
+                            }}
                             onFromCurrencyChange={currencyCode => {
                                 this.setState({
                                     selectedFromCurrency: currencyCode,
@@ -60,6 +69,20 @@ class ExchangeComponent extends Component {
                             }}
                         />
                     </div>
+                    <div className="row">
+                        <button
+                            className="exchange-button"
+                            onClick={() => {
+                                console.log(selectedFromValue);
+                                actions.performExchange({
+                                    [selectedFromCurrency]: get(pockets, selectedFromCurrency) - selectedFromValue,
+                                    [selectedToCurrency]: get(pockets, selectedToCurrency) + selectedToValue,
+                                });
+                            }}
+                        >
+                            Exchange
+                        </button>
+                    </div>
                 </div>
             </div>
         );
@@ -71,6 +94,7 @@ class ExchangeComponent extends Component {
 ExchangeComponent.propTypes = {
     actions: PropTypes.shape({
         getRates: PropTypes.func.isRequired,
+        performExchange: PropTypes.func.isRequired,
     }).isRequired,
     error: PropTypes.string,
     pockets: PropTypes.object,
@@ -80,6 +104,7 @@ ExchangeComponent.propTypes = {
 ExchangeComponent.defaultProps = {
     actions: {
         getRates: noop,
+        performExchange: noop,
     },
     error: '',
     rates: {},

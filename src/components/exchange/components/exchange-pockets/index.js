@@ -36,6 +36,7 @@ class ExchangePockets extends Component {
         return (
             !isEqual(nextProps.pockets, this.props.pockets) ||
             !isEqual(nextState.fromValue, this.state.fromValue) ||
+            !isEqual(nextState.fromValue, this.state.fromValue) ||
             !isEqual(nextProps.rates, this.props.rates)
         );
     }
@@ -95,10 +96,17 @@ class ExchangePockets extends Component {
                                   PRECISION_AFTER_COMMA
                               )}`;
 
-                        this.setState({
-                            fromValue: inputValue,
-                            toValue: convertedToValue,
-                        });
+                        this.setState(
+                            {
+                                fromValue: inputValue,
+                                toValue: convertedToValue,
+                            },
+                            () =>
+                                this.props.onValueChange({
+                                    fromValue: Math.abs(parseFloat(inputValue.replace(/,/g, ''))),
+                                    toValue: parseFloat(convertedToValue),
+                                })
+                        );
                     }}
                 />
                 {!isFromValue && (
@@ -115,18 +123,22 @@ class ExchangePockets extends Component {
 }
 
 ExchangePockets.propTypes = {
-    pockets: PropTypes.object,
     /** Pockets Object */
+    pockets: PropTypes.object,
+    /** Rates Object */
     rates: PropTypes.object,
     /** Callback When We Change "From Currency" */
     onFromCurrencyChange: PropTypes.func,
     /** Callback When We Change "To Currency" */
     onToCurrencyChange: PropTypes.func,
+    /** Callback When We Change Value */
+    onValueChange: PropTypes.func,
 };
 
 ExchangePockets.defaultProps = {
     onFromCurrencyChange: noop,
     onToCurrencyChange: noop,
+    onValueChange: noop,
 };
 
 export default ExchangePockets;

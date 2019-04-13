@@ -1,4 +1,4 @@
-import { getRates } from './exchange-actions';
+import { getRates, performExchange } from './exchange-actions';
 
 export function mapStateToProps(state) {
     const { exchangeRates } = state;
@@ -14,6 +14,7 @@ export function mapDispatchToProps(dispatch) {
     return {
         actions: {
             getRates: () => dispatch(getRates()),
+            performExchange: values => dispatch(performExchange(values)),
         },
     };
 }

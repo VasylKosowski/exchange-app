@@ -8,6 +8,8 @@ export const LOAD_EXCHANGE_RATES = {
     FAILED: 'LOAD_EXCHANGE_RATES_FAILED',
 };
 
+export const PERFORM_EXCHANGE = 'PERFORM_EXCHANGE';
+
 export const getRates = () => dispatch => {
     dispatch({ type: LOAD_EXCHANGE_RATES.REQUESTED });
 
@@ -23,4 +25,11 @@ export const getRates = () => dispatch => {
             return dispatch({ type: LOAD_EXCHANGE_RATES.FAILED, error: get(response, 'error') });
         })
         .catch(error => dispatch({ type: LOAD_EXCHANGE_RATES.FAILED, error: error }));
+};
+
+export const performExchange = values => dispatch => {
+    return dispatch({
+        type: PERFORM_EXCHANGE,
+        values,
+    });
 };
