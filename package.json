@@ -29,7 +29,7 @@
   },
   "pre-commit": [
     "test",
-    "eslint"
+    "eslint-fix"
   ],
   "eslintConfig": {
     "extends": "react-app"

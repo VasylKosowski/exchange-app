@@ -27,9 +27,8 @@ export const getRates = () => dispatch => {
         .catch(error => dispatch({ type: LOAD_EXCHANGE_RATES.FAILED, error: error }));
 };
 
-export const performExchange = values => dispatch => {
-    return dispatch({
+export const performExchange = values => dispatch =>
+    dispatch({
         type: PERFORM_EXCHANGE,
         values,
     });
-};

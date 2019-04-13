@@ -73,11 +73,19 @@ class ExchangeComponent extends Component {
                         <button
                             className="exchange-button"
                             onClick={() => {
-                                console.log(selectedFromValue);
-                                actions.performExchange({
-                                    [selectedFromCurrency]: get(pockets, selectedFromCurrency) - selectedFromValue,
-                                    [selectedToCurrency]: get(pockets, selectedToCurrency) + selectedToValue,
-                                });
+                                if (
+                                    !isEqual(this.state.selectedFromValue, 0) ||
+                                    !isEqual(this.state.selectedToValue, 0)
+                                ) {
+                                    actions.performExchange({
+                                        [selectedFromCurrency]: get(pockets, selectedFromCurrency) - selectedFromValue,
+                                        [selectedToCurrency]: get(pockets, selectedToCurrency) + selectedToValue,
+                                    });
+                                    this.setState({
+                                        selectedFromValue: 0,
+                                        selectedToValue: 0,
+                                    });
+                                }
                             }}
                         >
                             Exchange

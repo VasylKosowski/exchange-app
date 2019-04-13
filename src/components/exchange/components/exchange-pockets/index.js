@@ -41,6 +41,16 @@ class ExchangePockets extends Component {
         );
     }
 
+    componentWillReceiveProps(nextProps) {
+        // clean up the value fo input values
+        if (!isEqual(nextProps.pockets, this.props.pockets)) {
+            this.setState({
+                fromValue: '',
+                toValue: '',
+            });
+        }
+    }
+
     render() {
         const { onFromCurrencyChange, onToCurrencyChange } = this.props;
         const pockets = isFromValue => this._renderPockets(isFromValue);
