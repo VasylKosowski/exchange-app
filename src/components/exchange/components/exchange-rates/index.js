@@ -16,8 +16,9 @@ const ExchangeRates = ({ rates, fromCurrency }) => {
             <select>
                 {map(omittedRates, (value, key) => {
                     const currencySymbol = getSymbolFromCurrency(key);
-                    const optionValue = `1${getSymbolFromCurrency(fromCurrency)} = ${currencySymbol}${formatAmount(
-                        (1 * value) / rates[fromCurrency],
+                    const calculatedRate = (1 * value) / rates[fromCurrency];
+                    const optionValue = `${getSymbolFromCurrency(fromCurrency)}1 = ${currencySymbol}${formatAmount(
+                        calculatedRate,
                         DIGITS_AFTER_COMMA_IN_RATES_SELECTOR
                     )}`;
 
@@ -33,7 +34,9 @@ const ExchangeRates = ({ rates, fromCurrency }) => {
 };
 
 ExchangeRates.propTypes = {
+    /** currency we are exchanging from */
     fromCurrency: PropTypes.string,
+    /** rates we have setup for selector */
     rates: PropTypes.object,
 };
 

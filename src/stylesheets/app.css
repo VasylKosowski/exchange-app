@@ -2,11 +2,7 @@
   text-align: center;
 }
 
-.rates-row {
-  height: 60px;
-}
-
-.app-header {
+.app {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -15,4 +11,10 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  padding-left: 12rem;
+  padding-right: 12rem;
+}
+
+.rates-row {
+  height: 60px;
 }

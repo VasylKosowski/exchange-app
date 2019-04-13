@@ -1,0 +1,7 @@
+.pocket-input-value input {
+    text-align: right;
+    margin-top: 2rem;
+    background-color: #282c34;
+    border: none;
+    outline: 0;
+}

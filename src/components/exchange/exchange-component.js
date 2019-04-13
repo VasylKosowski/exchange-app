@@ -37,7 +37,7 @@ class ExchangeComponent extends Component {
 
         return (
             <div className="exchange-application">
-                <header className="app-header">
+                <div className="app">
                     {error && <span>Error: {error}</span>}
                     <div className="row rates-row">
                         {this._isRateSelectorVisible() && (
@@ -46,6 +46,7 @@ class ExchangeComponent extends Component {
                     </div>
                     <div className="row">
                         <ExchangePockets
+                            rates={rates}
                             pockets={pockets}
                             onFromCurrencyChange={currencyCode => {
                                 this.setState({
@@ -59,7 +60,7 @@ class ExchangeComponent extends Component {
                             }}
                         />
                     </div>
-                </header>
+                </div>
             </div>
         );
     }
