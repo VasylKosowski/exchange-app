@@ -11,9 +11,6 @@ const PocketValues = ({ currency, amount, className }) => {
 
     return (
         <div className={componentClass}>
-            <div className="currency">
-                <h3>{currency}</h3>
-            </div>
             <div className="amount">
                 <h6>
                     You have: {getSymbolFromCurrency(currency)}

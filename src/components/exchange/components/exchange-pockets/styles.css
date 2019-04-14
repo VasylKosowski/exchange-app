@@ -1,4 +1,9 @@
-.exchange-values {
-    margin-left: 3.2rem;
-    margin-bottom: 3.2rem;
+.exchange-pockets select {
+    background: #282c34;
+    width: 100%;
+}
+
+.currency-rates {
+    text-align: right;
+    padding-right: 0 !important;
 }

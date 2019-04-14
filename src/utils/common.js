@@ -9,4 +9,4 @@ export const isSuccess = response => get(response, 'success');
 
 export const formatAmount = (amount, digits) => convertAmountWithDigits(amount || DEFAULT_AMOUNT, digits);
 
-export const isEmptyOrZero = value => isEqual(value, 0) || isEmpty(value);
+export const NotEmptyOrZero = value => !isEqual(value, 0) || !isEmpty(value);

@@ -1,7 +1,7 @@
 export const CURRENCIES_CODES = ['USD', 'EUR', 'GBP'];
 
 export const DEFAULT_AMOUNTS = {
-    USD: 10.0,
+    USD: 100.0,
     EUR: 15.0,
     GBP: 100.15777,
 };

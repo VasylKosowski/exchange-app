@@ -42,7 +42,7 @@ class ExchangeComponent extends Component {
             <div className="exchange-application">
                 <div className="app">
                     {error && <span>Error: {error}</span>}
-                    <div className="row rates-row">
+                    <div className="row stable-height-row">
                         {this._isRateSelectorVisible() && (
                             <ExchangeRates rates={rates} fromCurrency={selectedFromCurrency} />
                         )}
@@ -50,6 +50,8 @@ class ExchangeComponent extends Component {
                     <div className="row">
                         <ExchangePockets
                             rates={rates}
+                            fromValue={this.state.selectedFromValue}
+                            toValue={this.state.selectedToValue}
                             pockets={pockets}
                             onValueChange={values => {
                                 this.setState({
@@ -69,27 +71,30 @@ class ExchangeComponent extends Component {
                             }}
                         />
                     </div>
-                    <div className="row">
-                        <button
-                            className="exchange-button"
-                            onClick={() => {
-                                if (
-                                    !isEqual(this.state.selectedFromValue, 0) ||
-                                    !isEqual(this.state.selectedToValue, 0)
-                                ) {
-                                    actions.performExchange({
-                                        [selectedFromCurrency]: get(pockets, selectedFromCurrency) - selectedFromValue,
-                                        [selectedToCurrency]: get(pockets, selectedToCurrency) + selectedToValue,
-                                    });
-                                    this.setState({
-                                        selectedFromValue: 0,
-                                        selectedToValue: 0,
-                                    });
-                                }
-                            }}
-                        >
-                            Exchange
-                        </button>
+                    <div className="row stable-height-row">
+                        {!isEqual(this.state.selectedFromCurrency, this.state.selectedToCurrency) && (
+                            <button
+                                className="exchange-button"
+                                onClick={() => {
+                                    if (
+                                        !isEqual(this.state.selectedFromValue, 0) ||
+                                        !isEqual(this.state.selectedToValue, 0)
+                                    ) {
+                                        actions.performExchange({
+                                            [selectedFromCurrency]:
+                                                get(pockets, selectedFromCurrency) - selectedFromValue,
+                                            [selectedToCurrency]: get(pockets, selectedToCurrency) + selectedToValue,
+                                        });
+                                        this.setState({
+                                            selectedFromValue: 0,
+                                            selectedToValue: 0,
+                                        });
+                                    }
+                                }}
+                            >
+                                Exchange
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>

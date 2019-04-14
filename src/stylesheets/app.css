@@ -11,11 +11,9 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-  padding-left: 25%;
-  padding-right: 25%;
 }
 
-.rates-row {
+.stable-height-row {
   height: 60px;
 }
 

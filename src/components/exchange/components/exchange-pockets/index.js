@@ -2,16 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import map from 'lodash/map';
 import noop from 'lodash/noop';
-import isEqual from 'lodash/isEqual';
-import findIndex from 'lodash/findIndex';
 import forEach from 'lodash/forEach';
 import PocketValues from './pocket-values';
 import InputValues from './input-values';
-import ExchangeCarousel from './exchange-carousel';
+import get from 'lodash/get';
 import { SELECTED_FROM_CURRENCY, SELECTED_TO_CURRENCY } from '../../../../constants/configurations';
 import getSymbolFromCurrency from 'currency-symbol-map';
-import { formatAmount, isEmptyOrZero } from '../../../../utils/common';
+import { formatAmount, NotEmptyOrZero } from '../../../../utils/common';
 import { PRECISION_AFTER_COMMA_IN_RATES_SELECTOR, PRECISION_AFTER_COMMA } from '../../../../constants/app-config';
+
+import './styles.css';
 
 class ExchangePockets extends Component {
     constructor(props) {
@@ -20,8 +20,6 @@ class ExchangePockets extends Component {
         this.state = {
             toCurrency: SELECTED_TO_CURRENCY,
             fromCurrency: SELECTED_FROM_CURRENCY,
-            fromValue: '',
-            toValue: '',
         };
     }
 
@@ -32,111 +30,100 @@ class ExchangePockets extends Component {
         });
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return (
-            !isEqual(nextProps.pockets, this.props.pockets) ||
-            !isEqual(nextState.fromValue, this.state.fromValue) ||
-            !isEqual(nextState.fromValue, this.state.fromValue) ||
-            !isEqual(nextProps.rates, this.props.rates)
-        );
-    }
-
-    componentWillReceiveProps(nextProps) {
-        // clean up the value fo input values
-        if (!isEqual(nextProps.pockets, this.props.pockets)) {
-            this.setState({
-                fromValue: '',
-                toValue: '',
-            });
-        }
-    }
-
     render() {
-        const { onFromCurrencyChange, onToCurrencyChange } = this.props;
-        const pockets = isFromValue => this._renderPockets(isFromValue);
+        const { fromValue, toValue } = this.props;
+        const { fromCurrency, toCurrency } = this.state;
 
         return (
             <div className="exchange-pockets">
-                <ExchangeCarousel
-                    selectedItem={findIndex(pockets(true), { key: SELECTED_FROM_CURRENCY })}
-                    onChange={itemKey => {
-                        this.setState(
-                            {
-                                fromCurrency: itemKey,
-                            },
-                            onFromCurrencyChange(itemKey)
-                        );
-                    }}
-                >
-                    {pockets(true)}
-                </ExchangeCarousel>
-                <ExchangeCarousel
-                    selectedItem={findIndex(pockets(false), { key: SELECTED_TO_CURRENCY })}
-                    onChange={itemKey => {
-                        this.setState(
-                            {
-                                toCurrency: itemKey,
-                            },
-                            onToCurrencyChange(itemKey)
-                        );
-                    }}
-                >
-                    {pockets(false)}
-                </ExchangeCarousel>
+                {this._renderPockets(fromCurrency, fromValue, true)}
+                {this._renderPockets(toCurrency, toValue, false)}
             </div>
         );
     }
 
     /** render pocket based on input flag whether this is from value pocket or not */
-    _renderPockets = isFromValue =>
-        map(this.props.pockets, (value, key) => (
-            <div key={key} className="row exchange-values">
-                <PocketValues currency={key} amount={value} className="col-xs-6" />
+    _renderPockets = (currency, value, isFromValue) => (
+        <div className="row exchange-values">
+            <div className="row">
+                <div className="col-xs-6">
+                    <select
+                        value={currency}
+                        onChange={event => {
+                            const currencyValue = get(event, 'target.value');
+
+                            if (isFromValue) {
+                                this.setState(
+                                    {
+                                        fromCurrency: currencyValue,
+                                    },
+                                    this.props.onFromCurrencyChange(currencyValue)
+                                );
+                            } else {
+                                this.setState(
+                                    {
+                                        toCurrency: currencyValue,
+                                    },
+                                    this.props.onToCurrencyChange(currencyValue)
+                                );
+                            }
+                        }}
+                    >
+                        {map(this.props.pockets, (value, key) => (
+                            <option value={key} key={key}>
+                                {key}
+                            </option>
+                        ))}
+                    </select>
+                </div>
                 <InputValues
                     isReadOnly={!isFromValue}
                     className="col-xs-6"
-                    value={isFromValue ? this.state.fromValue : this.state.toValue}
+                    value={value}
                     onChange={inputValue => {
-                        const convertedToValue = isEmptyOrZero(inputValue)
+                        const convertedToValue = !NotEmptyOrZero(inputValue)
                             ? ''
                             : `${formatAmount(
                                   (Math.abs(parseFloat(inputValue.replace(/,/g, ''))) *
                                       this.props.rates[this.state.toCurrency]) /
-                                      this.props.rates[key],
+                                      this.props.rates[currency],
                                   PRECISION_AFTER_COMMA
                               )}`;
 
-                        this.setState(
-                            {
-                                fromValue: inputValue,
-                                toValue: convertedToValue,
-                            },
-                            () =>
-                                this.props.onValueChange({
-                                    fromValue: Math.abs(parseFloat(inputValue.replace(/,/g, ''))),
-                                    toValue: parseFloat(convertedToValue),
-                                })
-                        );
+                        this.props.onValueChange({
+                            fromValue: Math.abs(parseFloat(inputValue.replace(/,/g, ''))),
+                            toValue: parseFloat(convertedToValue),
+                        });
                     }}
                 />
-                {!isFromValue && (
+            </div>
+
+            <PocketValues currency={currency} amount={this.props.pockets[currency]} className="col-xs-6" />
+
+            {!isFromValue && (
+                <div className="col-xs-6 currency-rates">
                     <h6>
-                        {`${getSymbolFromCurrency(key)}1 = ${getSymbolFromCurrency(this.state.fromCurrency)}
+                        {`${getSymbolFromCurrency(currency)}1 = ${getSymbolFromCurrency(this.state.fromCurrency)}
                             ${formatAmount(
-                                this.props.rates[this.state.fromCurrency] / this.props.rates[key],
+                                this.props.rates[this.state.fromCurrency] / this.props.rates[currency],
                                 PRECISION_AFTER_COMMA_IN_RATES_SELECTOR
                             )}`}
                     </h6>
-                )}
-            </div>
-        ));
+                </div>
+            )}
+        </div>
+    );
 }
 
 ExchangePockets.propTypes = {
+    /** from value */
+    fromValue: PropTypes.number,
     /** Pockets Object */
     pockets: PropTypes.object,
     /** Rates Object */
     rates: PropTypes.object,
+    /** to value */
+    toValue: PropTypes.number,
     /** Callback When We Change "From Currency" */
     onFromCurrencyChange: PropTypes.func,
     /** Callback When We Change "To Currency" */

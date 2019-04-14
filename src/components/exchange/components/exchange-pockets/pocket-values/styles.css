@@ -1,4 +1,4 @@
-.current-values .currency, .amount {
-    padding-left: 3.2rem;
+.current-values {
+    padding-left: 0 !important;
     text-align: left;
 }
