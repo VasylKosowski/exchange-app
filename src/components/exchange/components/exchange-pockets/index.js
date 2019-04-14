@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import map from 'lodash/map';
 import noop from 'lodash/noop';
 import forEach from 'lodash/forEach';
+import isEqual from 'lodash/isEqual';
 import PocketValues from './pocket-values';
 import InputValues from './input-values';
 import get from 'lodash/get';
@@ -100,7 +101,7 @@ class ExchangePockets extends Component {
 
             <PocketValues currency={currency} amount={this.props.pockets[currency]} className="col-xs-6" />
 
-            {!isFromValue && (
+            {!isFromValue && !isEqual(this.state.fromCurrency, this.state.toCurrency) && (
                 <div className="col-xs-6 currency-rates">
                     <h6>
                         {`${getSymbolFromCurrency(currency)}1 = ${getSymbolFromCurrency(this.state.fromCurrency)}

@@ -1,4 +1,4 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is Demo Exchange Application created and bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
@@ -11,6 +11,10 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.<br>
 You will also see any lint errors in the console.
+
+### `mock` 
+Runs application in mock mode you need to pass mock parameter:
+Open [http://localhost:3000/?mock=true](http://localhost:3000) to view it in the browser.
 
 ### `npm test`
 
