@@ -39,6 +39,7 @@ InputValues.propTypes = {
 
 InputValues.defaultProps = {
     onChange: noop,
+    className: '',
 };
 
 export default InputValues;

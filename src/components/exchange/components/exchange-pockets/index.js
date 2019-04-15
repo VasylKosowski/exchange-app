@@ -137,6 +137,8 @@ ExchangePockets.defaultProps = {
     onFromCurrencyChange: noop,
     onToCurrencyChange: noop,
     onValueChange: noop,
+    pockets: {},
+    rates: {},
 };
 
 export default ExchangePockets;
