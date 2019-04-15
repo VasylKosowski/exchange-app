@@ -1,5 +1,12 @@
 This is Demo Exchange Application created and bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+In `constants\app-config,js` file you can change fetching interval, precisions, etc.
+
+In `constants\configurations.js` file you can set the currencies and values in each pocket.
+
+In `constants\api-endpoints.js` file you can set your `openExchangeRateAppId` to fetch fates from [https://openexchangerates.org](https://openexchangerates.org).
+By default there is my private APP ID which has limitations for requests.
+
 ## Available Scripts
 
 In the project directory, you can run:
@@ -13,6 +20,7 @@ The page will reload if you make edits.<br>
 You will also see any lint errors in the console.
 
 ### `mock` 
+
 Runs application in mock mode you need to pass mock parameter:
 Open [http://localhost:3000/?mock=true](http://localhost:3000) to view it in the browser.
 
